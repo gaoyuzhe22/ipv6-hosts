@@ -245,8 +245,8 @@ def query_domain(domain, tcp):
     code=2
     ipadlist=('202.40.161.116','202.40.160.109','202.40.160.248','202.40.161.203','123.255.91.97',
     '202.40.161.254','118.140.0.0','124.248.192.1','134.208.0.0','59.125.205.87','140.113.215.224',
-    '59.125.39.2','155.69.203.4','61.211.238.90','69.233.219.78')
-    #hk,tw,sgp,jp,lax
+    '59.125.39.2','155.69.203.4','61.211.238.90','211.220.194.0','69.233.219.78')
+    #hk,tw,sgp,jp,kr,lax
     nu=len(ipadlist)
     while(counter<nu):
         ipad=ipadlist[counter%nu]    
@@ -409,7 +409,7 @@ def simplify(hosts,choose=True):
     if(choose):
         addr=config['outfile']  # The path of input file
         ss='\n'
-        addr2=addr + 'simplify'          
+        addr2='hosts_hk_unix'          
         with open(addr2, 'wt',newline=ss) as f: #写入的地址要改
             for raw in hosts:
                 if((not re.match(r'^\#',raw)) and (not re.search(r'\d{0,3}\.\d{0,3}\.\d{0,3}\.\d{0,3}',raw)) and (not re.match(r'^\s+',raw)) ):
@@ -418,6 +418,15 @@ def simplify(hosts,choose=True):
         
 def main():
     get_config()
+    s = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
+    s.settimeout(2)
+    tcp_flag=s.connect_ex(('dns.google.com', 443))
+    s.close()
+    if tcp_flag ==0:
+        print('Connect to google dns successfully\n')
+    else:
+        sys.exit(1)
+    
     
     choose=str(input('Would you want to simplify the hosts(y/n)(Default is yes)\n'))
     if choose=='n':
